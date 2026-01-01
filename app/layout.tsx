@@ -2,6 +2,9 @@ import React from 'react'
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
+import { Header } from "./_components/header"
+import { Sidebar } from "./_components/sidebar"
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,7 +30,19 @@ const RootLayout = ({
     return (
         <html lang="en">
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                {children}
+                {/* {children} */}
+                <div className="min-h-screen bg-background">
+                    {/* Desktop sidebar */}
+                    <div className="hidden lg:block">
+                        <Sidebar />
+                    </div>
+
+                    {/* Main content */}
+                    <div className="lg:pl-64">
+                        <Header />
+                        <main className="p-4 lg:p-6">{children}</main>
+                    </div>
+                </div>
             </body>
         </html>
     )
