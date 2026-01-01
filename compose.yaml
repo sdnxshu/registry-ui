@@ -1,15 +1,46 @@
+version: "3.8"
+
 services:
   app:
     build:
       context: .
       dockerfile: Dockerfile
     container_name: app
+    restart: unless-stopped
     environment:
       - NODE_ENV=production
     ports:
       - "3000:3000"
+    depends_on:
+      registry:
+        condition: service_healthy
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:3000/health" ]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - default
+
+  registry:
+    image: registry:3
+    container_name: registry
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    volumes:
+      - registry-data:/var/lib/registry
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:5000/v2/_catalog" ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    networks:
+      - default
+
+networks:
+  default:
+
+
+volumes:
+  registry-data:
